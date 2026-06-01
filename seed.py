@@ -1,4 +1,4 @@
-from app import db
+from app import app, db
 from app.models import Menu
 
 class Seeder(object):
@@ -11,6 +11,7 @@ class Seeder(object):
 
 if __name__ == '__main__':
     print("Seeding...")
-    seeder = Seeder()
-    seeder.populate_database()
+    with app.app_context():
+        seeder = Seeder()
+        seeder.populate_database()
     print("Seeding complete.")
