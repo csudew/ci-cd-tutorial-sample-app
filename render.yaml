@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: ci-cd-sample-app
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt && pip install -r requirements-server.txt
+    startCommand: flask db upgrade && python seed.py && gunicorn app:app -b 0.0.0.0:$PORT
+    envVars:
+      - key: FLASK_APP
+        value: bootstrap.py
+      - key: PYTHON_VERSION
+        value: 3.11.9
