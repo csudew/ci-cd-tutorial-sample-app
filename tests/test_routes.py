@@ -21,11 +21,14 @@ class BasicTests(unittest.TestCase):
             os.environ.get('TEST_DATABASE_URL') or \
             'sqlite:///' + TEST_DB
         self.app = app.test_client()
+        self.ctx = app.app_context()
+        self.ctx.push()
         db.drop_all()
         db.create_all()
 
     def tearDown(self):
-        pass
+        db.session.remove()
+        self.ctx.pop()
 
     def test_home(self):
         response = self.app.get('/', follow_redirects=True)
@@ -33,6 +36,15 @@ class BasicTests(unittest.TestCase):
         self.assertEqual(response.mimetype, 'application/json')
         body = json.loads(response.data)
         self.assertEqual(body['status'], 'ok')
+
+    def test_health_endpoint(self):
+        response = self.app.get('/health', follow_redirects=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.mimetype, 'application/json')
+        body = json.loads(response.data)
+        self.assertEqual(body['status'], 'healthy')
+        self.assertIn('version', body)
+        self.assertIn('message', body)
 
     def test_menu_empty(self):
         response = self.app.get('/menu', follow_redirects=True)

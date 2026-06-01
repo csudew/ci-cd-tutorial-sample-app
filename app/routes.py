@@ -1,19 +1,26 @@
-from flask import json, jsonify
-from app import app
-from app import db
+from flask import jsonify
+from app import app, db
 from app.models import Menu
+
 
 @app.route('/')
 def home():
-	return jsonify({ "status": "ok" })
+    return jsonify({"status": "ok"})
+
+
+@app.route('/health')
+def health():
+    return jsonify({
+        "status": "healthy",
+        "version": "1.1.0",
+        "message": "CI/CD Pipeline Demo - Assignment 02"
+    })
+
 
 @app.route('/menu')
 def menu():
     today = Menu.query.first()
     if today:
-        body = { "today_special": today.name }
-        status = 200
+        return jsonify({"today_special": today.name}), 200
     else:
-        body = { "error": "Sorry, the service is not available today." }
-        status = 404
-    return jsonify(body), status
+        return jsonify({"error": "Sorry, the service is not available today."}), 404
