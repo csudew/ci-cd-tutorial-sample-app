@@ -22,7 +22,7 @@ Also:
 
  * `Python 3.8`
  * `Pip`
- * `virtualenv`, or `conda`, or `miniconda`
+ * `virtualenv `, or `conda`, or `miniconda`
 
 The `psycopg2` package does require `libpq-dev` and `gcc`.
 To install them (with `apt`), run:
